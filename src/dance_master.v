@@ -93,11 +93,12 @@ reg[31:0] delay;
 // This is the direction the cylon-eye is currently moving
 reg direction;
 
-// This is the next pattern to drive out
+// This is the next pattern to drive out to the LEDs
 reg[15:0] pattern;
 
 // The number of milliseconds remaining before the next update of LEDs
 reg[31:0] remaining_ms;
+
 
 //==========================================================================
 // This state machine uses the button as a "start/stop" mechanism to 
