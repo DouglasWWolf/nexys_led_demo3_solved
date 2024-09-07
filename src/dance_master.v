@@ -164,6 +164,8 @@ always @(posedge clk) begin
                 else
                     pattern <= pattern >> 1;
 
+                // In any case, set the "remaining_ms" timer and go to 
+                // the next state to wait for it to expire
                 remaining_ms <= ms_delay;                
                 fsm_state    <= fsm_state + 1;
             end
