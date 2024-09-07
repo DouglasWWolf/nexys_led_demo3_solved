@@ -96,6 +96,9 @@ reg direction;
 // This is the next pattern to drive out
 reg[15:0] pattern;
 
+// The number of milliseconds remaining before the next update of LEDs
+reg[31:0] remaining_ms;
+
 //==========================================================================
 // This state machine uses the button as a "start/stop" mechanism to 
 // either set or clear 'running'
@@ -117,9 +120,11 @@ end
 //==========================================================================
 always @(posedge clk) begin
     
-    AMCI_READ <= 0;
+    // When these are strobed, they remain high for a single clock-cycle
+    AMCI_READ  <= 0;
     AMCI_WRITE <= 0;
     
+    // This is a countdown timer
     if (delay) delay <= delay - 1;
 
     if (resetn == 0) begin
@@ -138,10 +143,9 @@ always @(posedge clk) begin
 
         // If we're running, drive the desired pattern to the LEDs
         1:  if (running & AMCI_WIDLE) begin
-                AMCI_WDATA <= pattern;
-                AMCI_WRITE <= 1;
-                delay      <= ms_delay * CLOCKS_PER_MSEC;
-                fsm_state  <= fsm_state + 1;
+                AMCI_WDATA   <= pattern;
+                AMCI_WRITE   <= 1;
+                fsm_state    <= fsm_state + 1;
             end
 
         // Compute the next pattern
@@ -159,12 +163,21 @@ always @(posedge clk) begin
                     direction <= MOVE_LEFT;
                 else
                     pattern <= pattern >> 1;
-                
-                fsm_state <= fsm_state + 1;
+
+                remaining_ms <= ms_delay;                
+                fsm_state    <= fsm_state + 1;
             end
 
-        // Once the timer expires, go write the new pattern to the LEDs
-        3:  if (delay == 0) fsm_state <= 1;
+
+        // Delay for the appropriate number of milliseconds
+        3:  if (delay == 0) begin
+                if (remaining_ms == 0)
+                    fsm_state <= 1;
+                else begin
+                    remaining_ms <= remaining_ms - 1;
+                    delay        <= CLOCKS_PER_MSEC;
+                end
+            end
 
     endcase
 
