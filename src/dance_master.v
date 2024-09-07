@@ -143,9 +143,9 @@ always @(posedge clk) begin
 
         // If we're running, drive the desired pattern to the LEDs
         1:  if (running & AMCI_WIDLE) begin
-                AMCI_WDATA   <= pattern;
-                AMCI_WRITE   <= 1;
-                fsm_state    <= fsm_state + 1;
+                AMCI_WDATA <= pattern;
+                AMCI_WRITE <= 1;
+                fsm_state  <= fsm_state + 1;
             end
 
         // Compute the next pattern
