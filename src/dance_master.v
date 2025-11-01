@@ -5,6 +5,8 @@
 //   Date     Who   Ver  Changes
 //====================================================================================
 // 02-May-22  DWW     1  Initial creation
+//
+// 01-Nov-25  DWW     1  Updated to more modern axi4_lite_master
 //====================================================================================
 
 /*
@@ -30,7 +32,8 @@ module dance_master # (parameter FREQ_HZ = 100000000, SLAVE_ADDR = 32'h1000)
     //====================  An AXI-Lite Master Interface  ======================
 
     // "Specify write address"          -- Master --    -- Slave --
-    output[31:0]                        M_AXI_AWADDR,   
+    output[31:0]                        M_AXI_AWADDR,  
+    output[2:0]                         M_AXI_AWPROT, 
     output                              M_AXI_AWVALID,  
     input                                               M_AXI_AWREADY,
 
@@ -47,6 +50,7 @@ module dance_master # (parameter FREQ_HZ = 100000000, SLAVE_ADDR = 32'h1000)
 
     // "Specify read address"           -- Master --    -- Slave --
     output[31:0]                        M_AXI_ARADDR,     
+    output[2:0]                         M_AXI_ARPROT,
     output                              M_AXI_ARVALID,
     input                                               M_AXI_ARREADY,
 
@@ -208,6 +212,7 @@ axi4_lite_master
     .AMCI_RIDLE     (AMCI_RIDLE),
 
     .AXI_AWADDR     (M_AXI_AWADDR),
+    .AXI_AWPROT     (M_AXI_AWPROT),
     .AXI_AWVALID    (M_AXI_AWVALID),
     .AXI_AWREADY    (M_AXI_AWREADY),
 
@@ -221,6 +226,7 @@ axi4_lite_master
     .AXI_BREADY     (M_AXI_BREADY),
 
     .AXI_ARADDR     (M_AXI_ARADDR),
+    .AXI_ARPROT     (M_AXI_ARPROT),
     .AXI_ARVALID    (M_AXI_ARVALID),
     .AXI_ARREADY    (M_AXI_ARREADY),
 
